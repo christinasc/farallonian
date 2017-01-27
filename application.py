@@ -2,10 +2,7 @@ import logging
 import logging.handlers
 import waterApplication
 import os
-
-
 from wsgiref.simple_server import make_server
-
 
 # Create logger
 logger = logging.getLogger(__name__)
@@ -64,6 +61,7 @@ if __name__ == '__main__':
     waterApplication.readConfigFile()
     response , browser =  waterApplication.handleWaterLogin()
     acctInfo =  waterApplication.getWaterAccountMain(response)
+    historyPage = waterApplication.getWaterBillHistory(response, browser)
 
     welcome = readHtmlFile(indexFile)
 #    welcome = readHtmlFile("acctInfo.html")

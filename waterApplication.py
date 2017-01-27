@@ -82,7 +82,6 @@ def waterProcess():
     acctInfo =  getWaterAccountMain(response)
     historyPage = getWaterBillHistory(response, browser)
 
-
 def main():
     waterProcess()
 
