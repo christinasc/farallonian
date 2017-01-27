@@ -1,6 +1,6 @@
 import mechanicalsoup, re
 from sys import argv
-import os
+import os, time
 
 
 loginInfo = { 'LOGIN':"login", 
@@ -9,6 +9,8 @@ loginInfo = { 'LOGIN':"login",
 
 configFile = "login.config.me"
 URL = "https://www.midpeninsulawater.org/billpay/"
+
+now = time.strftime("%c")
 
 def readConfigFile():
     with open(configFile) as fp:
@@ -51,10 +53,10 @@ def getWaterAccountMain(response):
     acctInfo = response.soup
     if acctInfo:
 #        acctText = acctInfo.get_text() # get text only
-        acctText = acctInfo
+        acctText = "Last Updated: " + now + str(acctInfo)
 #    print ("Got acct info")
    # print(acctInfo)
-    writeFile(str(acctInfo), "./static/acctInfo.html")
+    writeFile(str(acctText), "./static/acctInfo.html")
     return acctText
  
 
@@ -70,7 +72,9 @@ def getWaterBillHistory(response, browser):
                     print ("Got history page")
                     historyPage =  history_page.soup.get_text()
                     #print(historyPage)
-                    writeFile(str(history_page.soup), "./static/waterHistory.html")
+                    historyString = "Last Updated:" + now + str(history_page.soup)
+                    writeFile(historyString, "./static/waterHistory.html")
+#                    writeFile(str(history_page.soup), "./static/waterHistory.html")
     return historyPage
 
 
