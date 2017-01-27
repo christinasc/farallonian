@@ -65,8 +65,8 @@ if __name__ == '__main__':
     response , browser =  waterApplication.handleWaterLogin()
     acctInfo =  waterApplication.getWaterAccountMain(response)
 
-    #welcome = readHtmlFile(indexFile)
-    welcome = readHtmlFile("acctInfo.html")
+    welcome = readHtmlFile(indexFile)
+#    welcome = readHtmlFile("acctInfo.html")
     
     httpd = make_server('', 8000, application)
     print("Serving on port 8000...")
