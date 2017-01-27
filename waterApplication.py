@@ -3,7 +3,6 @@ from sys import argv
 import os
 
 
-
 loginInfo = { 'LOGIN':"login", 
               'PASSWORD':"password",
               'USER_NAME': "username"}
@@ -55,7 +54,7 @@ def getWaterAccountMain(response):
         acctText = acctInfo
 #    print ("Got acct info")
    # print(acctInfo)
-    writeFile(str(acctInfo), "acctInfo.html")
+    writeFile(str(acctInfo), "./static/acctInfo.html")
     return acctText
  
 
@@ -71,7 +70,7 @@ def getWaterBillHistory(response, browser):
                     print ("Got history page")
                     historyPage =  history_page.soup.get_text()
                     #print(historyPage)
-                    writeFile(str(history_page.soup), "waterHistory.html")
+                    writeFile(str(history_page.soup), "./static/waterHistory.html")
     return historyPage
 
 

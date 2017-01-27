@@ -35,6 +35,7 @@ def readHtmlFile(myfile):
 
 def application(environ, start_response):
     welcome = readHtmlFile(indexFile)
+    waterApplication.waterProcess()
 
     path    = environ['PATH_INFO']
     method  = environ['REQUEST_METHOD']
