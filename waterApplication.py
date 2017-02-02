@@ -52,10 +52,10 @@ def getWaterAccountMain(response):
     acctText = ""
     acctInfo = response.soup
     if acctInfo:
-#        acctText = acctInfo.get_text() # get text only
-        acctText = "Last Updated: " + now + str(acctInfo)
+#       acctText = acctInfo.get_text() # get text only
+        acctText = "Script Update: " + now + str(acctInfo)
 #    print ("Got acct info")
-   # print(acctInfo)
+#    print(acctInfo)
     writeFile(str(acctText), "./static/acctInfo.html")
     return acctText
  
@@ -72,7 +72,7 @@ def getWaterBillHistory(response, browser):
                     print ("Got history page")
                     historyPage =  history_page.soup.get_text()
                     #print(historyPage)
-                    historyString = "Last Updated:" + now + str(history_page.soup)
+                    historyString = "Script Update:" + now + str(history_page.soup)
                     writeFile(historyString, "./static/waterHistory.html")
 #                    writeFile(str(history_page.soup), "./static/waterHistory.html")
     return historyPage
