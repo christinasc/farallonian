@@ -12,85 +12,7 @@
   -->
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Welcome</title>
-  <style>
-  body {
-    color: #ffffff;
-    background-color: #E0E0E0;
-    font-family: Arial, sans-serif;
-    font-size:14px;
-    -moz-transition-property: text-shadow;
-    -moz-transition-duration: 4s;
-    -webkit-transition-property: text-shadow;
-    -webkit-transition-duration: 4s;
-    text-shadow: none;
-  }
-  body.blurry {
-    -moz-transition-property: text-shadow;
-    -moz-transition-duration: 4s;
-    -webkit-transition-property: text-shadow;
-    -webkit-transition-duration: 4s;
-    text-shadow: #fff 0px 0px 25px;
-  }
-  a {
-    color:  #555;  
-  }
-  p {
-    color: #00000ff;
-  }
-  li  { 
-    color: #0188cc;
-  }
-
-  .textColumn, .linksColumn {
-    padding: 2em;
-  }
-  .textColumn {
-    position: absolute;
-    top: 0px;
-    right: 50%;
-    bottom: 0px;
-    left: 0px;
-
-    text-align: right;
-    padding-top: 11em;
-    background-color: #1BA86D;
-    background-image: -moz-radial-gradient(left top, circle, #6AF9BD 0%, #00B386 60%);
-    background-image: -webkit-gradient(radial, 0 0, 1, 0 0, 500, from(#6AF9BD), to(#00B386));
-  }
-  .textColumn p {
-    width: 75%;
-    float:right;
-  }
-  .linksColumn {
-    position: absolute;
-    top:0px;
-    right: 0px;
-    bottom: 0px;
-    left: 50%;
-
-    background-color: #fff; 
-  }
-
-  h1 {
-    font-size: 500%;
-    font-weight: normal;
-    margin-bottom: 0em;
-    color: #fff;
-  }
-  h2 {
-    font-size: 200%;
-    font-weight: normal;
-    margin-bottom: 0em;
-    color: #0188cc;
-  }
-  ul {
-    padding-left: 1em;
-    margin: 0px;
-  }
-  li {
-    margin: 1em 0em;
-  }
-  </style>
+<link rel="stylesheet" href="styles.css" title="external style sheet">
 </head>
 <body id="sample">
   <div class="textColumn">
@@ -101,6 +23,9 @@
   
   <div class="linksColumn"> 
     <h2>Water Bill</h2>
+    <iframe width="400" height="100" src="static/waterCurrent.html"> 
+      </iframe>
+
     <ul>
     <li> <a href="./static/acctInfo.html"> View Current Bill and Account Information </a>
     <li> <a href="./static/waterHistory.html"> View Historical Information </a>
@@ -111,6 +36,8 @@
 </ul>
 
   <h2> Electical and Gas Bill </h2>
+  <iframe width="400" height="100" src="static/pge.html"></iframe>
+
   <ul>
     <li> <a href="./static/pge.txt"> View Current PGE bill </a>
     <li> <p> You can pay online at  <a href="http://pge.com">pge.com</a> </p>
