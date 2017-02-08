@@ -1,5 +1,7 @@
 appdirs==1.4.0
+base==1.0.4
 beautifulsoup4==4.5.3
+email==4.0.2
 google-api-python-client==1.6.1
 httplib2==0.10.3
 MechanicalSoup==0.6.0
