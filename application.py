@@ -5,7 +5,6 @@ import os
 import gmail_quickstart
 from wsgiref.simple_server import make_server
 
-
 # Create logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -32,8 +31,6 @@ def readHtmlFile(myfile):
   with open(myfile) as mf:
       fileContent = mf.read()
   return fileContent
-
-
 
 def application(environ, start_response):
     welcome = readHtmlFile(indexFile)
