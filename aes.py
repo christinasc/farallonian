@@ -1,6 +1,12 @@
 import os, random, struct
 from Crypto.Cipher import AES
 
+key = '0123456789abcdef'
+#IV = 16 * '\x00'           # Initialization vector: discussed later
+#mode = AES.MODE_CBC
+#encryptor = AES.new(key, mode, IV=IV)
+
+
 def encrypt_file(key, in_filename, out_filename=None, chunksize=64*1024):
     """ Encrypts a file using AES (CBC mode) with the
         given key.
@@ -68,3 +74,16 @@ def decrypt_file(key, in_filename, out_filename=None, chunksize=24*1024):
                 outfile.write(decryptor.decrypt(chunk))
 
             outfile.truncate(origsize)
+
+
+sourcefile = "login.config.me"
+encryptfile = "login-encrypt"
+decryptfile = "login-decrypt"
+
+def main():
+    encrypt_file(key, sourcefile, encryptfile , 64*1024)
+    decrypt_file(key, encryptfile, decryptfile, 64*1024)
+
+
+if __name__ == '__main__':
+    main()
