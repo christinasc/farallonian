@@ -77,10 +77,11 @@ def decrypt_file(key, in_filename, out_filename=None, chunksize=24*1024):
 
 
 sourcefile = "login.config.me"
-encryptfile = "login-encrypt"
-decryptfile = "login-decrypt"
+encryptfile = ".credentials/login-encrypt"
+decryptfile = ".credentials/login-decrypt"
 
 def main():
+
     encrypt_file(key, sourcefile, encryptfile , 64*1024)
     decrypt_file(key, encryptfile, decryptfile, 64*1024)
 
