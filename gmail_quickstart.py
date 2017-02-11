@@ -173,17 +173,18 @@ def main():
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('gmail', 'v1', http=http)
 
-    results = service.users().labels().list(userId='me').execute()
-    labels = results.get('labels', [])
+#    results = service.users().labels().list(userId='me').execute()
+#    labels = results.get('labels', [])
 
-    if not labels:
-        print('No labels found.')
-    else:
-      print('Labels:')
-      for label in labels:
-        print(label['name'])
+#    if not labels:
+#        print('No labels found.')
+#    else:
+#      print('Labels:')
+#      for label in labels:
+#        print(label['name'])
       
     print(" ------ ------ ------ ------ \n")
+
     queryList = ListMessagesWithLabels(service, 'me', ['Label_1'], 'is:unread') # label 1 is PGEUtilities, custom label
     if queryList > 0:
         print ('Unread messages: ', len(queryList), "\n")
