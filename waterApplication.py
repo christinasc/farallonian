@@ -48,14 +48,29 @@ def handleWaterLogin():
     return response, browser
 
 
+'''
+    for eachTable in response.soup.find_all('table'):
+        if re.find(r"Account Status", eachTable.text):
+            print("--------------BEGIN TABLE ----------")
+            print(eachTable.text)
+            print("--------------END TABLE ----------")
+'''
+
 def getWaterAccountMain(response):
     acctText = ""
+    acctStatus = ""
     acctInfo = response.soup
+    allTables =  response.soup.find_all('table')
+#    print("length of all tables:", len(allTables))
+
+    for eachTable in allTables:
+        if re.search(r"Account Status", eachTable.text):
+            acctStatus = eachTable
+    print(acctStatus)
+    writeFile(str(acctStatus), "./static/waterCurrent.html")
+
     if acctInfo:
-#       acctText = acctInfo.get_text() # get text only
         acctText = "Script Update: " + now + str(acctInfo)
-#    print ("Got acct info")
-#    print(acctInfo)
     writeFile(str(acctText), "./static/acctInfo.html")
     return acctText
  
