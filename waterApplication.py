@@ -36,6 +36,7 @@ def getLoginInfo(browser):
     response = browser.submit(login_form, login_page.url)
     return response
 
+
 def handleWaterLogin():
     # create a browser object
     browser = mechanicalsoup.Browser()
@@ -47,14 +48,6 @@ def handleWaterLogin():
         print("Not connected")
     return response, browser
 
-
-'''
-    for eachTable in response.soup.find_all('table'):
-        if re.find(r"Account Status", eachTable.text):
-            print("--------------BEGIN TABLE ----------")
-            print(eachTable.text)
-            print("--------------END TABLE ----------")
-'''
 
 def getWaterAccountMain(response):
     acctText = ""
@@ -76,6 +69,7 @@ def getWaterAccountMain(response):
         writeFile(str(acctText), "./static/acctInfo.html")
     return acctText
  
+
 
 def getWaterBillHistory(response, browser):
     historyPage = ""
@@ -101,6 +95,7 @@ def waterProcess():
     response , browser =  handleWaterLogin()
     acctInfo =  getWaterAccountMain(response)
     historyPage = getWaterBillHistory(response, browser)
+
 
 def main():
     waterProcess()
