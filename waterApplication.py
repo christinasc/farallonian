@@ -60,18 +60,20 @@ def getWaterAccountMain(response):
     acctText = ""
     acctStatus = ""
     acctInfo = response.soup
-    allTables =  response.soup.find_all('table')
-#    print("length of all tables:", len(allTables))
-
-    for eachTable in allTables:
-        if re.search(r"Account Status", eachTable.text):
-            acctStatus = eachTable
-    print(acctStatus)
-    writeFile(str(acctStatus), "./static/waterCurrent.html")
-
     if acctInfo:
+        allTables =  response.soup.find_all('table')
+        # print("length of all tables:", len(allTables))
+
+    ## this gets only the account status section amount owed and write it to file
+        for eachTable in allTables:
+            if re.search(r"Account Status", eachTable.text):
+                acctStatus = eachTable
+      # print(acctStatus)
+        writeFile(str(acctStatus), "./static/waterCurrent.html")
+
+    ## this will write the entire page to file
         acctText = "Script Update: " + now + str(acctInfo)
-    writeFile(str(acctText), "./static/acctInfo.html")
+        writeFile(str(acctText), "./static/acctInfo.html")
     return acctText
  
 
