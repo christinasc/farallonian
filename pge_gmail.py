@@ -2,6 +2,7 @@ from __future__ import print_function
 import httplib2
 import os
 import base64, email
+import re
 
 from apiclient import discovery
 from apiclient import errors
@@ -101,8 +102,8 @@ def getLatestHistoryId(service, http, queryList):
         if currentHistoryId > latesthistoryId:
           latesthistoryId = currentHistoryId
 
-      print("------ ------ EMAIL Header info ------ ------ ")
 
+      print("------ ------ EMAIL Header info ------ ------ ")
       mime_msg = GetMimeMessage(service, 'me', q['id'])
       date = mime_msg['date']
       frm = mime_msg['from']
@@ -112,6 +113,18 @@ def getLatestHistoryId(service, http, queryList):
       print("MIME From: ", frm)
       print("MIME Subject: ", subj)
       print ("message ID" , mime_msg['historyId'], q['id'])
+
+      rawtext = ""
+      for part in mime_msg.walk():
+          if part.get_content_type() == 'text/plain':
+              rawtext = part.get_payload()
+          else:
+              print("other multipart-mime - skipping")
+      print("-------- Parsing message out --------\n\n")
+ 
+
+      billAmt =  re.search(r"The amount of(.*)", rawtext)
+      print(billAmt.group(0))
 
     return latesthistoryId
 
@@ -181,7 +194,8 @@ def getMail():
 
 
         
-#def main():
+def main():
+    getMail()
 
-#if __name__ == '__main__':
-#    main()
+if __name__ == '__main__':
+    main()
