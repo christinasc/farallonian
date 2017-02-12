@@ -122,11 +122,23 @@ def getLatestHistoryId(service, http, queryList):
               print("other multipart-mime - skipping")
       print("-------- Parsing message out --------\n\n")
  
+      writeFile(rawtext, "static/pge.txt")
 
       billAmt =  re.search(r"The amount of(.*)", rawtext)
-      print(billAmt.group(0))
+      billLine = billAmt.group(0)
+      print(billLine)
+      
+      #### add formatting here  - todo
+      writeFile(billLine, "static/pge.html")
 
     return latesthistoryId
+
+
+def writeFile(content, filename):
+    with open(filename, 'w') as op:
+        op.write(content)
+        op.close()
+
 
 """Get Message with given ID.
 """
