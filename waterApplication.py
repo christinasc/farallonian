@@ -1,25 +1,29 @@
 import mechanicalsoup, re
 from sys import argv
 import os, time
-
+import aes
 
 loginInfo = { 'LOGIN':"login", 
               'PASSWORD':"password",
               'USER_NAME': "username"}
 
-configFile = "login.config.me"
-URL = "https://www.midpeninsulawater.org/billpay/"
+configFile = ".credentials/login-decrypt"
+encryptfile = ".credentials/login-encrypt"
 
+URL = "https://www.midpeninsulawater.org/billpay/"
 now = time.strftime("%c")
 
 def readConfigFile():
+    aes.decrypt_file(aes.key, encryptfile, configFile, 64*1024)
     with open(configFile) as fp:
         for line in fp:
             entry = line.split(":")
             key = entry[0].strip()
             val = entry[1].strip()
             loginInfo[key] = val 
- #   print("this is logininfo", loginInfo)
+    print("this is logininfo", loginInfo)
+    os.remove(configFile)
+    ## remove login-decrypt file here
     
 def writeFile(content, filename):
     with open(filename, 'w') as op:
