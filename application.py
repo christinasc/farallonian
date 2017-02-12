@@ -2,7 +2,7 @@ import logging
 import logging.handlers
 import waterApplication
 import os
-import gmail_quickstart
+import pge_gmail
 from wsgiref.simple_server import make_server
 
 # Create logger
@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 # Handler 
-#LOG_FILE = '/tmp/log/sample-app.log'
-LOG_FILE = '/opt/python/log/sample-app.log'
+LOG_FILE = '/tmp/log/sample-app.log'
+#LOG_FILE = '/opt/python/log/sample-app.log'
 handler = logging.handlers.RotatingFileHandler(LOG_FILE, maxBytes=1048576, backupCount=5)
 handler.setLevel(logging.INFO)
 
@@ -33,9 +33,10 @@ def readHtmlFile(myfile):
   return fileContent
 
 def application(environ, start_response):
-    welcome = readHtmlFile(indexFile)
     waterApplication.waterProcess()
+    pge_gmail.getMail()
 
+    welcome = readHtmlFile(indexFile)
     path    = environ['PATH_INFO']
     method  = environ['REQUEST_METHOD']
     if method == 'POST':
@@ -50,7 +51,7 @@ def application(environ, start_response):
             logger.warning('Error retrieving request body for async work.')
         response = ''
     else:
-        response = welcome
+      response = welcome
     status = '200 OK'
     headers = [('Content-type', 'text/html')]
 
@@ -59,7 +60,7 @@ def application(environ, start_response):
 
 
 if __name__ == '__main__':
-
-    httpd = make_server('', 8000, application)
-    print("Serving on port 8000...")
-    httpd.serve_forever()
+  
+  httpd = make_server('', 8000, application)
+  print("Serving on port 8000...")
+  httpd.serve_forever()

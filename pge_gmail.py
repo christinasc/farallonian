@@ -163,7 +163,7 @@ def GetMimeMessage(service, user_id, msg_id):
     print ('An error occurred: %s' % error)
 
 
-def main():
+def getMail():
     """Shows basic usage of the Gmail API.
 
     Creates a Gmail API service object and outputs a list of label names
@@ -178,8 +178,10 @@ def main():
         print ('Unread messages: ', len(queryList), "\n")
         latestHistoryId = getLatestHistoryId(service, http, queryList) 
         print("latest history id: " , latestHistoryId)
+
+
         
+#def main():
 
-
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()

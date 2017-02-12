@@ -101,12 +101,12 @@ def waterProcess():
     historyPage = getWaterBillHistory(response, browser)
 
 
-def main():
-    waterProcess()
+#def main():    
+#    waterProcess()
 
 
-if __name__ == "__main__":
-    main()
+#if __name__ == "__main__":
+#    main()
 
 
 
