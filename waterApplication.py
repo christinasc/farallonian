@@ -21,7 +21,6 @@ def readConfigFile():
             key = entry[0].strip()
             val = entry[1].strip()
             loginInfo[key] = val 
-    print("this is logininfo", loginInfo)
     os.remove(configFile)
     ## remove login-decrypt file here
     

@@ -10,7 +10,6 @@ from oauth2client import client
 from oauth2client import tools
 from oauth2client.file import Storage
 
-
 try:
     import argparse
     flags = argparse.ArgumentParser(parents=[tools.argparser]).parse_args()
@@ -25,6 +24,20 @@ except ImportError:
 SCOPES = 'https://mail.google.com/'
 CLIENT_SECRET_FILE = 'client_secret.json'
 APPLICATION_NAME = 'Farallonian'
+historyIDFile = "static/pge_historyid.txt"
+
+
+def readFile(filename):
+    fobj = open(filename)
+    content = fobj.read()
+    fobj.close()
+    return content
+
+
+def writeFile(content, filename):
+    with open(filename, 'w') as op:
+        op.write(content)
+        op.close()
 
 
 def get_credentials():
@@ -92,8 +105,9 @@ def ListMessagesWithLabels(service, user_id, label_ids=[], query=''):
 
 
 
-def getLatestHistoryId(service, http, queryList):
-    latesthistoryId = 0
+def getLatestHistoryId(service, http, queryList, currentId):
+    latesthistoryId = currentId
+
     if len(queryList) > 0:
       for q in queryList:
         msg =  GetMessage(service, 'me', q['id'])
@@ -101,43 +115,36 @@ def getLatestHistoryId(service, http, queryList):
         print("historyid ",currentHistoryId)
         if currentHistoryId > latesthistoryId:
           latesthistoryId = currentHistoryId
-
-
-      print("------ ------ EMAIL Header info ------ ------ ")
-      mime_msg = GetMimeMessage(service, 'me', q['id'])
-      date = mime_msg['date']
-      frm = mime_msg['from']
-      subj = mime_msg['subject']
-
-      print("MIME Date: ", date)
-      print("MIME From: ", frm)
-      print("MIME Subject: ", subj)
-      print ("message ID" , mime_msg['historyId'], q['id'])
-
-      rawtext = ""
-      for part in mime_msg.walk():
-          if part.get_content_type() == 'text/plain':
-              rawtext = part.get_payload()
-          else:
-              print("other multipart-mime - skipping")
-      print("-------- Parsing message out --------\n\n")
- 
-      writeFile(rawtext, "static/pge.txt")
-
-      billAmt =  re.search(r"The amount of(.*)", rawtext)
-      billLine = billAmt.group(0)
-      print(billLine)
-      
-      #### add formatting here  - todo
-      writeFile(billLine, "static/pge.html")
+            
+      # only process if the prevoius id  is not the same as latest
+      if latesthistoryId > currentId:
+          mime_msg = GetMimeMessage(service, 'me', q['id'])
+          date = mime_msg['date']
+          frm = mime_msg['from']
+          subj = mime_msg['subject']
+          #      print("------ ------ EMAIL Header info ------ ------ ")          
+          #      print("MIME From: ", frm)
+          #      print("MIME Date: ", date)
+          #      print("MIME Subject: ", subj)
+          #      print ("message ID" , mime_msg['historyId'], q['id'])
+          
+          rawtext = ""
+          for part in mime_msg.walk():
+              if part.get_content_type() == 'text/plain':
+                  rawtext = part.get_payload()
+              else:
+                  print("other multipart-mime - skipping")
+          print("-------- Parsing message out --------\n\n")                  
+          writeFile(rawtext, "static/pge.txt")
+          billAmt =  re.search(r"The amount of(.*)", rawtext)
+          billLine = billAmt.group(0)
+          #          print(billLine)      
+          #### add formatting here  - todo
+          writeFile(billLine, "static/pge.html")
 
     return latesthistoryId
 
 
-def writeFile(content, filename):
-    with open(filename, 'w') as op:
-        op.write(content)
-        op.close()
 
 
 """Get Message with given ID.
@@ -198,11 +205,17 @@ def getMail():
     http = credentials.authorize(httplib2.Http())
     service = discovery.build('gmail', 'v1', http=http)
 
+    currentHistoryId = readFile("static/pge_historyid.txt")
+    print("currentHistoryId:", currentHistoryId)
+
     queryList = ListMessagesWithLabels(service, 'me', ['Label_1'], 'is:unread') # label 1 is PGEUtilities, custom label
     if queryList > 0:
         print ('Unread messages: ', len(queryList), "\n")
-        latestHistoryId = getLatestHistoryId(service, http, queryList) 
-        print("latest history id: " , latestHistoryId)
+        latestHistoryId = getLatestHistoryId(service, http, queryList, currentHistoryId) 
+
+        print("latest history id: " , latestHistoryId)        
+        if (latestHistoryId > currentHistoryId):
+            writeFile(latestHistoryId, historyIDFile)
 
 
         
