@@ -3,6 +3,7 @@ import httplib2
 import os
 import base64, email
 import re
+from bs4 import BeautifulSoup
 
 from apiclient import discovery
 from apiclient import errors
@@ -106,44 +107,62 @@ def ListMessagesWithLabels(service, user_id, label_ids=[], query=''):
 
 
 def getLatestHistoryId(service, http, queryList, currentId):
-    latesthistoryId = currentId
+    latest = 0
+    msgid = 0
 
     if len(queryList) > 0:
       for q in queryList:
         msg =  GetMessage(service, 'me', q['id'])
         currentHistoryId = msg['historyId']
-        print("historyid ",currentHistoryId)
-        if currentHistoryId > latesthistoryId:
-          latesthistoryId = currentHistoryId
-            
+        print("historyid ", currentHistoryId, "- latest:", latest)
+        if int(currentHistoryId) > int(latest):
+            latest = int(currentHistoryId)
+            msgid = q['id']
+
+      print("latest history id:", latest, "msg id", msgid)
+#      print("message", msg)
+
       # only process if the prevoius id  is not the same as latest
-      if latesthistoryId > currentId:
-          mime_msg = GetMimeMessage(service, 'me', q['id'])
+      if latest > int(currentId):
+
+          mime_msg = GetMimeMessage(service, 'me', msgid)
           date = mime_msg['date']
           frm = mime_msg['from']
           subj = mime_msg['subject']
-          #      print("------ ------ EMAIL Header info ------ ------ ")          
-          #      print("MIME From: ", frm)
-          #      print("MIME Date: ", date)
-          #      print("MIME Subject: ", subj)
-          #      print ("message ID" , mime_msg['historyId'], q['id'])
-          
+
           rawtext = ""
+          rawtext = rawtext + " ------ ------ EMAIL Header info ------ ------ <br>" + "From: " + frm + "<br>" +  "Date: " + date + "<br>" +  "Subject: " + subj +"<br>" +  "Msg ID: " + msgid + "<br>"
+
+          print("------ ------ EMAIL Header info ------ ------ ") 
+          print("MIME From: ", frm)
+          print("MIME Date: ", date)
+          print("MIME Subject: ", subj)
+#          print ("message ID" , msgid)
+          
+
           for part in mime_msg.walk():
-              if part.get_content_type() == 'text/plain':
-                  rawtext = part.get_payload()
+#              print(part.get_content_type())
+              if part.get_content_type() == 'text/html':
+                  rawtext = rawtext + part.get_payload()
+                  writeFile(rawtext, "static/pge_email.html")
+
+                  soup = BeautifulSoup(rawtext, "html.parser")
+                  para = soup.findAll('p')
+                  for eachp in para:
+                      billAmt =  re.search(r"The amount of(.*)", eachp.text)
+                      if billAmt:
+                          billLine = billAmt.group(0)
+                          billContent = eachp.text.encode('utf-8').strip()
+                          bc = billContent.replace("=", "")
+                          bc = bc.replace("<", "")
+                          bc = bc.replace("/p>", "")
+                          print("REGEX match:", bc)
+                          writeFile(bc, "static/pge.html")
               else:
                   print("other multipart-mime - skipping")
-          print("-------- Parsing message out --------\n\n")                  
-          writeFile(rawtext, "static/pge.txt")
-          billAmt =  re.search(r"The amount of(.*)", rawtext)
-          billLine = billAmt.group(0)
-          #          print(billLine)      
-          #### add formatting here  - todo
-          writeFile(billLine, "static/pge.html")
+          print("-------- Parsing message out --------\n\n")
 
-    return latesthistoryId
-
+    return latest
 
 
 
@@ -188,8 +207,6 @@ def GetMimeMessage(service, user_id, msg_id):
     msg_str = base64.urlsafe_b64decode(message['raw'].encode('ASCII'))
     mime_msg = email.message_from_string(msg_str)
 
-#    print("\n ****** MIME BODY ****** \n", mime_msg)
-
     return mime_msg
   except errors.HttpError, error:
     print ('An error occurred: %s' % error)
@@ -211,11 +228,11 @@ def getMail():
     queryList = ListMessagesWithLabels(service, 'me', ['Label_1'], 'is:unread') # label 1 is PGEUtilities, custom label
     if queryList > 0:
         print ('Unread messages: ', len(queryList), "\n")
-        latestHistoryId = getLatestHistoryId(service, http, queryList, currentHistoryId) 
+        latestHistoryId = getLatestHistoryId(service, http, queryList, int(currentHistoryId))
 
-        print("latest history id: " , latestHistoryId)        
-        if (latestHistoryId > currentHistoryId):
-            writeFile(latestHistoryId, historyIDFile)
+        print("latest history id: " , latestHistoryId)            
+        if (int(latestHistoryId) > int(currentHistoryId)): # cast to int
+            writeFile(str(latestHistoryId), "static/pge_historyid.txt")
 
 
         
